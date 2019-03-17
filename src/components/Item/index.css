@@ -2,6 +2,11 @@ li {
     margin:10px 0 10px 0;
 }
 
+.left-finished {
+    text-align: left;
+    text-decoration: line-through;
+}
+
 .left {
     text-align:left;
 }

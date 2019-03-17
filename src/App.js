@@ -19,14 +19,60 @@ class App extends Component {
                     "complete": true
                 }
             ]
-        }
+        };
+        this.changeState = this.changeState.bind(this);
+        this.deleteDate = this.deleteDate.bind(this);
+        this.changeComplete = this.changeComplete.bind(this);
     }
+
+    changeState(message) {
+        if (!message) {
+            return;
+        }
+
+        let new_data = this.state.data,
+            length = this.state.data.length + 1;
+
+        new_data = new_data.concat({
+            "id": `${length}`,
+            "content": message,
+            "complete": false
+        });
+
+        this.setState({
+                data: new_data
+            }
+        );
+
+        console.log(this.state.data);
+    }
+
+    deleteDate(id) {
+        if (!id){
+            return;
+        }
+
+        let new_data = this.state.data;
+        new_data = new_data.filter(item => item.id !== id);
+        this.setState({data:new_data});
+    }
+
+    changeComplete(id) {
+        if (!id){
+            return ;
+        }
+
+        let new_data = this.state.data;
+        new_data[id-1].complete = new_data[id-1].complete ? false : true;
+        this.setState({data:new_data});
+    }
+
     render() {
         return (
             <div className="container">
                     <Header/>
-                    <List data={this.state.data}/>
-                    <Editor/>
+                    <List data={this.state.data} delete={this.deleteDate} complete={this.changeComplete}/>
+                    <Editor changeState={this.changeState}/>
             </div>
         );
     }
