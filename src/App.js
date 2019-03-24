@@ -4,47 +4,39 @@ import Header from './components/Header/';
 import List from './components/List/';
 import Editor from './components/Editor/';
 
+const defaultValue = [];
+
+export const AppContext = React.createContext(defaultValue);
+
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [
-                {
-                    "id": "1",
-                    "content": "做一个TodoList",
-                    "complete": false
-                }, {
-                    "id": "2",
-                    "content": "学ES6",
-                    "complete": true
-                }
-            ]
+            data: defaultValue,
+            length: 0
         };
         this.changeState = this.changeState.bind(this);
         this.deleteDate = this.deleteDate.bind(this);
         this.changeComplete = this.changeComplete.bind(this);
+        this.sortByState = this.sortByState.bind(this);
     }
 
-    changeState(message) {
-        if (!message) {
-            return;
+    changeState(input) {
+        if (input && input.current.state.value) {
+            let new_data = this.state.data,
+                length = this.state.length + 1;
+
+            new_data.unshift({
+                "id": `${length}`,
+                "content": input.current.state.value,
+                "complete": false
+            });
+
+            this.setState({length: length});
+            this.sortByState(new_data);
+            input.current.state.value = '';
+            input.current.focus();
         }
-
-        let new_data = this.state.data,
-            length = this.state.data.length + 1;
-
-        new_data = new_data.concat({
-            "id": `${length}`,
-            "content": message,
-            "complete": false
-        });
-
-        this.setState({
-                data: new_data
-            }
-        );
-
-        console.log(this.state.data);
     }
 
     deleteDate(id) {
@@ -54,7 +46,7 @@ class App extends Component {
 
         let new_data = this.state.data;
         new_data = new_data.filter(item => item.id !== id);
-        this.setState({data:new_data});
+        this.sortByState(new_data);
     }
 
     changeComplete(id) {
@@ -63,17 +55,50 @@ class App extends Component {
         }
 
         let new_data = this.state.data;
-        new_data[id-1].complete = new_data[id-1].complete ? false : true;
-        this.setState({data:new_data});
+        new_data.find(function (d) {
+            if (d.id == id) {
+                let new_d = d;
+                d.complete = d.complete ? false : true;
+                return new_d;
+            }
+        });
+
+        this.sortByState(new_data);
+    }
+
+    sortByState(state) {
+        let unfinished = [],
+            finished = [];
+
+        state.forEach(function (d) {
+            if (d.complete){
+                finished.push((d));
+            } else {
+                unfinished.push(d);
+            }
+        });
+
+        // finished.sort(function (a,b) {
+        //     return a.id - b.id;
+        // });
+        // unfinished.sort(function (a,b) {
+        //     return b.id - a.id;
+        // });
+
+        state = unfinished.concat(finished);
+        console.log(state);
+        this.setState({data: state});
     }
 
     render() {
         return (
-            <div className="container">
+            <AppContext.Provider value={{ data:this.state.data,changeState:this.changeState,deleteDate:this.deleteDate,changeComplete:this.changeComplete }}>
+                <div className="container">
                     <Header/>
-                    <List data={this.state.data} delete={this.deleteDate} complete={this.changeComplete}/>
-                    <Editor changeState={this.changeState}/>
-            </div>
+                    <List data={this.state.data}/>
+                    <Editor/>
+                </div>
+            </AppContext.Provider>
         );
     }
 }
