@@ -8,10 +8,13 @@ class List extends Component {
         super(props)
     }
     render() {
-        let item_list = [],
+        let item_list = <li>{this.props.data}</li>,
             items = this.props.data;
-        for (let i=0;i<items.length;i++){
-            item_list.push(<Item key={items[i].id} id={items[i].id} content={items[i].content} complete={items[i].complete}/>)
+        if ( typeof items[0] == 'object') {
+            item_list = [];
+            for (let i=0;i<items.length;i++){
+                item_list.push(<Item key={items[i].id} id={items[i].id} content={items[i].content} complete={items[i].complete}/>)
+            }
         }
 
         return (

@@ -21,6 +21,15 @@ class App extends Component {
         this.sortByState = this.sortByState.bind(this);
     }
 
+    static getDerivedStateFromProps(nextProps,preState) {
+        if (preState.data.length == 0) {
+        }
+        return null;
+    }
+
+    componentDidMount() {
+    }
+
     changeState(input) {
         if (input && input.current.state.value) {
             let new_data = this.state.data,
@@ -86,16 +95,22 @@ class App extends Component {
         // });
 
         state = unfinished.concat(finished);
-        console.log(state);
         this.setState({data: state});
     }
 
     render() {
+        let length = this.state.data.length,
+            showList = <List data='还没有内容'/>;
+
+        if (length > 0){
+            showList = <List data={this.state.data}/>;
+        }
+
         return (
             <AppContext.Provider value={{ data:this.state.data,changeState:this.changeState,deleteDate:this.deleteDate,changeComplete:this.changeComplete }}>
                 <div className="container">
                     <Header/>
-                    <List data={this.state.data}/>
+                    {showList}
                     <Editor/>
                 </div>
             </AppContext.Provider>
