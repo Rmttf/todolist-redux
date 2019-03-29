@@ -27,9 +27,6 @@ class App extends Component {
         return null;
     }
 
-    componentDidMount() {
-    }
-
     changeState(input) {
         if (input && input.current.state.value) {
             let new_data = this.state.data,
