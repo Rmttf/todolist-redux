@@ -6,6 +6,7 @@ export function addTodo(item) {
     }
 }
 
+// action for delete
 export function deleteTodo(all_item) {
     return {
         type : 'delete',
@@ -13,6 +14,7 @@ export function deleteTodo(all_item) {
     }
 }
 
+// action for complete
 export function completeTodo(all_item) {
     return {
         type : 'complete',
