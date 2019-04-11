@@ -4,13 +4,25 @@ import './index.css';
 import Container from './Container';
 import * as serviceWorker from './serviceWorker';
 
-import { createStore } from 'redux';
+import { createStore,applyMiddleware } from 'redux';
+import { composeWithDevTools } from "redux-devtools-extension";
 import { Provider } from 'react-redux';
 
 import { contentReducer } from "./reducer/reducer";
+import createSageMiddleware from 'redux-saga';
+import mySaga from './saga/mysaga';
 
 
-const state = createStore(contentReducer);
+// create the saga middleware
+const sagaMiddleware = createSageMiddleware();
+const state = createStore(
+    contentReducer,
+    composeWithDevTools(
+        applyMiddleware(sagaMiddleware)
+    )
+);
+
+sagaMiddleware.run(mySaga);
 
 ReactDOM.render(
     <Provider store={state}>
