@@ -68,6 +68,14 @@ export function contentReducer (state = defaultValue,action) {
                 }
             }
             break;
+        case 'new add':
+            let new_sstate = _.clone(state);
+            if (action.item && new_sstate.data) {
+                new_sstate.data = new_sstate.data.concat([action.item]);
+            } else {
+                new_sstate.data = [action.item];
+            }
+            return new_sstate;
         default:
             return defaultValue;
     }
